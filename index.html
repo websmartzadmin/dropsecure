@@ -54,25 +54,3 @@
   </div>
 </body>
 </html>
-      src="https://websmartz.dropsecure.com/send/46f23185-34d3-4346-9673-60e62f9a9ea7"
-      title="Secure Credentials Intake">
-    </iframe>
-
-    <div class="click-shield" aria-hidden="true"></div>
-  </div>
-
-<script>
-  // Allow live tuning via URL params, e.g. ?offset=300&vh=1050&msg=Your%20custom%20instruction
-  (function () {
-    const params = new URLSearchParams(location.search);
-    const offset = params.get('offset');
-    const vh = params.get('vh');
-    const msg = params.get('msg');
-
-    if (offset) document.documentElement.style.setProperty('--offset', offset.replace(/[^0-9.]/g,'') + 'px');
-    if (vh)     document.documentElement.style.setProperty('--vh', vh.replace(/[^0-9.]/g,'') + 'px');
-    if (msg)    document.getElementById('note').textContent = decodeURIComponent(msg);
-  })();
-</script>
-</body>
-</html>
