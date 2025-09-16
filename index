@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Secure Credentials Intake</title>
+<style>
+  :root {
+    /* default values (can be overridden by URL params) */
+    --offset: 280px;      /* how much of the top to hide */
+    --vh: 980px;          /* visible height of the frame in Jotform */
+  }
+
+  /* Outer viewport that Jotform (or your site) will embed */
+  .viewport {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: var(--vh);
+    overflow: hidden;             /* crops the top of the inner iframe */
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  /* Instruction bar (optional) */
+  .note {
+    position: sticky;
+    top: 0;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 10px 14px;
+    font: 600 14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #222;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* The DropSecure page */
+  .ds-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: calc(var(--vh) + var(--offset) + 600px); /* keep it taller than viewport */
+    border: 0;
+    transform: translateY(calc(var(--offset) * -1)); /* move up to hide top */
+  }
+
+  /* Invisible blocker so hidden uploader can’t be clicked/dragged */
+  .click-shield {
+    position: absolute;
+    left: 0; top: 0; right: 0;
+    height: var(--offset);
+    pointer-events: auto;  /* intercept events */
+    background: transparent;
+    z-index: 10;
+  }
+
+  /* Helpful default responsive tuning */
+  @media (max-width: 640px) {
+    :root { --offset: 320px; --vh: 1180px; }
+  }
+</style>
+</head>
+<body>
+  <div class="viewport" id="vp">
+    <div class="note" id="note">
+      Enter your GoDaddy Email (line 1) and Password (line 2) in the message box below.
+    </div>
+
+    <iframe
+      id="ds"
+      class="ds-frame"
+      src="https://websmartz.dropsecure.com/send/46f23185-34d3-4346-9673-60e62f9a9ea7"
+      title="Secure Credentials Intake">
+    </iframe>
+
+    <div class="click-shield" aria-hidden="true"></div>
+  </div>
+
+<script>
+  // Allow live tuning via URL params, e.g. ?offset=300&vh=1050&msg=Your%20custom%20instruction
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const offset = params.get('offset');
+    const vh = params.get('vh');
+    const msg = params.get('msg');
+
+    if (offset) document.documentElement.style.setProperty('--offset', offset.replace(/[^0-9.]/g,'') + 'px');
+    if (vh)     document.documentElement.style.setProperty('--vh', vh.replace(/[^0-9.]/g,'') + 'px');
+    if (msg)    document.getElementById('note').textContent = decodeURIComponent(msg);
+  })();
+</script>
+</body>
+</html>
